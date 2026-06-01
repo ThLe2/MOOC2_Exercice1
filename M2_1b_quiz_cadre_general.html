@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Activité 1b — Vrai ou Faux : le cadre général de l'exécution forcée</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#16243B;
+    --blue:#1F4E79;
+    --blue-2:#2E75B6;
+    --paper:#F5F2EB;
+    --card:#FFFFFF;
+    --ink:#1d2733;
+    --muted:#5d6b7a;
+    --line:#e3ddd0;
+    --gold:#B08D57;
+    --ok:#2F7A4F;
+    --ok-bg:#EAF4ED;
+    --ko:#B23B3B;
+    --ko-bg:#FaEDED;
+    --shadow:0 1px 2px rgba(22,36,59,.05),0 8px 24px rgba(22,36,59,.06);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:'Karla',-apple-system,system-ui,sans-serif;
+    background:var(--paper);
+    color:var(--ink);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:780px;margin:0 auto;padding:32px 20px 64px}
+
+  /* Header */
+  .eyebrow{
+    font-size:12px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--blue);font-weight:700;margin:0 0 10px
+  }
+  .eyebrow span{color:var(--gold)}
+  h1{
+    font-family:'Fraunces',Georgia,serif;font-weight:600;
+    font-size:clamp(28px,5vw,40px);line-height:1.12;color:var(--navy);
+    margin:0 0 12px;letter-spacing:-.01em
+  }
+  .lede{font-size:16px;color:var(--muted);margin:0;max-width:62ch}
+  .rule{height:3px;width:64px;background:var(--gold);border:0;margin:20px 0 28px}
+
+  /* Progress + score bar */
+  .meta{
+    display:flex;align-items:center;justify-content:space-between;gap:16px;
+    flex-wrap:wrap;margin-bottom:24px
+  }
+  .progress{flex:1;min-width:180px}
+  .progress .track{height:8px;background:#e6e0d3;border-radius:99px;overflow:hidden}
+  .progress .fill{height:100%;width:0;background:var(--blue-2);border-radius:99px;transition:width .45s cubic-bezier(.2,.7,.2,1)}
+  .progress .label{font-size:12.5px;color:var(--muted);margin-top:6px;letter-spacing:.02em}
+  .scorepill{
+    font-family:'Fraunces',serif;font-weight:600;color:var(--navy);
+    background:var(--card);border:1px solid var(--line);border-radius:99px;
+    padding:8px 16px;font-size:15px;box-shadow:var(--shadow)
+  }
+  .scorepill b{color:var(--blue);font-size:18px}
+
+  /* Cards */
+  .q{
+    background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:22px 24px;margin:0 0 18px;box-shadow:var(--shadow);
+    opacity:0;transform:translateY(12px);
+    animation:rise .5s cubic-bezier(.2,.7,.2,1) forwards
+  }
+  @keyframes rise{to{opacity:1;transform:none}}
+  .q-top{display:flex;gap:14px;align-items:flex-start}
+  .num{
+    flex:none;width:34px;height:34px;border-radius:50%;
+    background:var(--navy);color:#fff;font-family:'Fraunces',serif;font-weight:600;
+    display:flex;align-items:center;justify-content:center;font-size:15px;margin-top:1px
+  }
+  .stmt{font-size:17px;color:var(--ink);font-weight:500;line-height:1.5}
+
+  .choices{display:flex;gap:12px;margin:18px 0 0 48px}
+  @media(max-width:520px){.choices{margin-left:0}}
+  .btn{
+    flex:1;cursor:pointer;font-family:'Karla',sans-serif;font-weight:700;
+    font-size:15px;letter-spacing:.03em;padding:13px 10px;border-radius:10px;
+    border:1.5px solid var(--line);background:#fff;color:var(--navy);
+    transition:transform .12s ease,border-color .15s ease,background .15s ease
+  }
+  .btn:hover:not(:disabled){border-color:var(--blue-2);transform:translateY(-1px)}
+  .btn:active:not(:disabled){transform:translateY(0)}
+  .btn:disabled{cursor:default}
+  .btn .ic{font-style:normal;margin-right:7px}
+  .btn.sel-ok{background:var(--ok-bg);border-color:var(--ok);color:var(--ok)}
+  .btn.sel-ko{background:var(--ko-bg);border-color:var(--ko);color:var(--ko)}
+  .btn.reveal-ok{border-color:var(--ok);color:var(--ok)}
+  .btn.dim{opacity:.45}
+
+  .fb{
+    margin:16px 0 0 48px;border-left:3px solid var(--line);padding:2px 0 2px 16px;
+    font-size:14.5px;color:var(--muted);max-height:0;overflow:hidden;opacity:0;
+    transition:max-height .4s ease,opacity .35s ease,padding .3s ease
+  }
+  @media(max-width:520px){.fb{margin-left:0}}
+  .fb.show{max-height:320px;opacity:1}
+  .fb .verdict{font-weight:700;font-family:'Karla',sans-serif;letter-spacing:.02em}
+  .fb.good{border-color:var(--ok)} .fb.good .verdict{color:var(--ok)}
+  .fb.bad{border-color:var(--ko)} .fb.bad .verdict{color:var(--ko)}
+  .fb .ref{display:inline-block;margin-top:7px;font-size:12.5px;color:var(--blue);
+    background:#eef3f9;border-radius:6px;padding:3px 9px;font-weight:600}
+
+  /* Result */
+  .result{
+    background:var(--navy);color:#fff;border-radius:16px;padding:30px 28px;margin-top:8px;
+    text-align:center;display:none;box-shadow:var(--shadow)
+  }
+  .result.show{display:block;animation:rise .5s ease forwards}
+  .result .big{font-family:'Fraunces',serif;font-size:46px;font-weight:600;line-height:1}
+  .result .big small{font-size:22px;color:#9fb6d4;font-weight:400}
+  .result .msg{font-size:16px;margin:14px auto 0;max-width:48ch;color:#dce6f2}
+  .result .ring{
+    width:96px;height:96px;border-radius:50%;margin:0 auto 16px;
+    display:flex;align-items:center;justify-content:center;
+    background:conic-gradient(var(--gold) var(--deg,0deg),#2c3e5a 0)
+  }
+  .result .ring i{width:78px;height:78px;border-radius:50%;background:var(--navy);
+    display:flex;align-items:center;justify-content:center;font-style:normal;
+    font-family:'Fraunces',serif;font-size:22px;font-weight:600}
+  .restart{
+    margin-top:22px;cursor:pointer;font-family:'Karla';font-weight:700;font-size:15px;
+    letter-spacing:.03em;color:var(--navy);background:var(--gold);border:0;
+    border-radius:10px;padding:12px 26px;transition:transform .12s ease,filter .15s ease
+  }
+  .restart:hover{filter:brightness(1.06);transform:translateY(-1px)}
+
+  footer{margin-top:34px;text-align:center;font-size:12px;color:#9a9384;letter-spacing:.04em}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">TMK Performances · Concilian — Recouvrement &nbsp;<span>/</span>&nbsp; Module 2 · Activité 1b</p>
+    <h1>Vrai ou Faux&nbsp;: le cadre général de l'exécution forcée</h1>
+    <p class="lede">Huit affirmations pour ancrer les fondamentaux vus en vidéo&nbsp;: les acteurs de l'exécution, les biens saisissables et les conditions que doit réunir la créance. Tranchez, puis lisez la justification.</p>
+    <hr class="rule">
+  </header>
+
+  <div class="meta">
+    <div class="progress">
+      <div class="track"><div class="fill" id="fill"></div></div>
+      <div class="label" id="plabel">0 / 8 répondu</div>
+    </div>
+    <div class="scorepill">Score&nbsp;: <b id="score">0</b> / 8</div>
+  </div>
+
+  <main id="quiz"></main>
+
+  <section class="result" id="result">
+    <div class="ring" id="ring"><i id="ringtxt">0/8</i></div>
+    <div class="big"><span id="rscore">0</span><small> / 8</small></div>
+    <p class="msg" id="rmsg"></p>
+    <button class="restart" id="restart">Recommencer le quiz</button>
+  </section>
+
+  <footer>TMK Performances · Synthèse pédagogique · Document interne</footer>
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    s: "Le juge de l'exécution peut modifier le dispositif de la décision qui sert de fondement aux poursuites.",
+    a: false,
+    e: "Le JEX tranche les difficultés et contestations nées de l'exécution, mais il ne peut ni modifier le dispositif de la décision, ni en suspendre l'exécution.",
+    ref: "art. R. 121-1 CPCE"
+  },
+  {
+    s: "Depuis le 1ᵉʳ juillet 2022, l'huissier de justice et le commissaire-priseur judiciaire ont fusionné en une seule profession : le commissaire de justice.",
+    a: true,
+    e: "Le commissaire de justice, issu de cette fusion, détient le monopole des mesures d'exécution forcée et conservatoires.",
+    ref: "art. L. 122-1 CPCE"
+  },
+  {
+    s: "L'appel d'une décision du juge de l'exécution se forme dans un délai de 15 jours et il suspend l'exécution.",
+    a: false,
+    e: "Le délai d'appel est bien de 15 jours à compter de la notification, mais cet appel n'est pas suspensif : l'exécution peut se poursuivre.",
+    ref: "art. R. 121-19 CPCE"
+  },
+  {
+    s: "En principe, tous les biens du débiteur sont saisissables, car ils constituent le gage commun de ses créanciers.",
+    a: true,
+    e: "C'est le principe du gage commun ; les insaisissabilités (biens vitaux, créances alimentaires, immunités…) ne sont que des exceptions.",
+    ref: "art. 2284 C. civ."
+  },
+  {
+    s: "Lors d'une saisie sur un compte bancaire, la totalité du solde disponible peut être appréhendée.",
+    a: false,
+    e: "Un solde bancaire insaisissable (SBI), équivalent au montant forfaitaire du RSA, est automatiquement laissé au débiteur sur son compte.",
+    ref: "art. L. 162-2 CPCE"
+  },
+  {
+    s: "Le commissaire de justice peut accéder directement aux informations administratives et bancaires du débiteur, sans passer par le ministère public.",
+    a: true,
+    e: "Il interroge directement les administrations et les banques (adresse, employeur, comptes) pour localiser le débiteur et ses avoirs.",
+    ref: "art. L. 152-1 et L. 152-2 CPCE"
+  },
+  {
+    s: "Une créance soumise à une condition suspensive non encore réalisée peut faire l'objet d'une mesure d'exécution forcée.",
+    a: false,
+    e: "La créance doit être actuelle : elle ne doit pas être éventuelle. Une condition suspensive non réalisée fait obstacle à l'exécution. La créance doit aussi être liquide et exigible.",
+    ref: "conditions de fond — art. L. 111-6 CPCE"
+  },
+  {
+    s: "Seul un titre exécutoire figurant dans la liste de l'article L. 111-3 du CPCE autorise les mesures d'exécution forcée.",
+    a: true,
+    e: "La liste des titres exécutoires est exhaustive : aucun titre ne peut être admis par analogie.",
+    ref: "art. L. 111-3 CPCE"
+  }
+];
+
+const TOTAL = QUESTIONS.length;
+let answered = 0, score = 0;
+const quiz = document.getElementById('quiz');
+
+function render(){
+  quiz.innerHTML = '';
+  QUESTIONS.forEach((q, i) => {
+    const card = document.createElement('article');
+    card.className = 'q';
+    card.style.animationDelay = (i * 70) + 'ms';
+    card.innerHTML = `
+      <div class="q-top">
+        <div class="num">${i+1}</div>
+        <p class="stmt">${q.s}</p>
+      </div>
+      <div class="choices">
+        <button class="btn" data-i="${i}" data-v="true"><span class="ic">✓</span>Vrai</button>
+        <button class="btn" data-i="${i}" data-v="false"><span class="ic">✕</span>Faux</button>
+      </div>
+      <div class="fb" id="fb-${i}"></div>`;
+    quiz.appendChild(card);
+  });
+  quiz.querySelectorAll('.btn').forEach(b => b.addEventListener('click', onAnswer));
+}
+
+function onAnswer(e){
+  const btn = e.currentTarget;
+  const i = +btn.dataset.i;
+  const choice = btn.dataset.v === 'true';
+  const q = QUESTIONS[i];
+  const card = btn.closest('.q');
+  if (card.dataset.done) return;
+  card.dataset.done = '1';
+
+  const btns = card.querySelectorAll('.btn');
+  const correct = (choice === q.a);
+  if (correct) score++;
+  answered++;
+
+  btns.forEach(b => {
+    b.disabled = true;
+    const bv = b.dataset.v === 'true';
+    if (b === btn) b.classList.add(correct ? 'sel-ok' : 'sel-ko');
+    if (bv === q.a && !correct) b.classList.add('reveal-ok');
+    if (b !== btn && !(bv === q.a && !correct)) b.classList.add('dim');
+  });
+
+  const fb = document.getElementById('fb-' + i);
+  fb.className = 'fb ' + (correct ? 'good' : 'bad');
+  const verdict = correct
+    ? 'Exact.'
+    : 'Réponse attendue : ' + (q.a ? 'Vrai' : 'Faux') + '.';
+  fb.innerHTML = `<span class="verdict">${verdict}</span> ${q.e}<br><span class="ref">${q.ref}</span>`;
+  requestAnimationFrame(() => fb.classList.add('show'));
+
+  update();
+}
+
+function update(){
+  document.getElementById('score').textContent = score;
+  document.getElementById('fill').style.width = (answered / TOTAL * 100) + '%';
+  document.getElementById('plabel').textContent = answered + ' / ' + TOTAL + ' répondu' + (answered>1?'es':'');
+  if (answered === TOTAL) finish();
+}
+
+function finish(){
+  const pct = Math.round(score / TOTAL * 100);
+  let msg;
+  if (score === TOTAL) msg = "Sans faute. Les fondamentaux du cadre de l'exécution forcée sont parfaitement en place.";
+  else if (score >= 6) msg = "Très solide. Revoyez les justifications des points manqués avant de passer à la suite.";
+  else if (score >= 4) msg = "Base correcte, mais quelques notions à consolider : relisez les affirmations corrigées ci-dessus.";
+  else msg = "À retravailler. Reprenez la vidéo I et les justifications du quiz, puis recommencez.";
+
+  const r = document.getElementById('result');
+  document.getElementById('rscore').textContent = score;
+  document.getElementById('rmsg').textContent = msg;
+  document.getElementById('ringtxt').textContent = score + '/' + TOTAL;
+  document.getElementById('ring').style.setProperty('--deg', (pct * 3.6) + 'deg');
+  r.classList.add('show');
+  r.scrollIntoView({behavior:'smooth', block:'center'});
+}
+
+document.getElementById('restart').addEventListener('click', () => {
+  answered = 0; score = 0;
+  document.getElementById('result').classList.remove('show');
+  render(); update();
+  window.scrollTo({top:0, behavior:'smooth'});
+});
+
+render(); update();
+</script>
+</body>
+</html>
