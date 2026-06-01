@@ -3,312 +3,500 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Activité 1b — Vrai ou Faux : le cadre général de l'exécution forcée</title>
+<title>Activité 2b — L'astreinte : provisoire / définitive + liquidation</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --navy:#16243B;
-    --blue:#1F4E79;
-    --blue-2:#2E75B6;
-    --paper:#F5F2EB;
-    --card:#FFFFFF;
-    --ink:#1d2733;
-    --muted:#5d6b7a;
-    --line:#e3ddd0;
-    --gold:#B08D57;
-    --ok:#2F7A4F;
-    --ok-bg:#EAF4ED;
-    --ko:#B23B3B;
-    --ko-bg:#FaEDED;
+    --navy:#16243B; --blue:#1F4E79; --blue-2:#2E75B6; --paper:#F5F2EB;
+    --card:#FFFFFF; --ink:#1d2733; --muted:#5d6b7a; --line:#e3ddd0; --gold:#B08D57;
+    --ok:#2F7A4F; --ok-bg:#EAF4ED; --ko:#B23B3B; --ko-bg:#FAEDED;
+    --amber:#B5852A; --amber-bg:#FBF1DC;
     --shadow:0 1px 2px rgba(22,36,59,.05),0 8px 24px rgba(22,36,59,.06);
   }
-  *{box-sizing:border-box}
-  html,body{margin:0;padding:0}
-  body{
-    font-family:'Karla',-apple-system,system-ui,sans-serif;
-    background:var(--paper);
-    color:var(--ink);
-    line-height:1.6;
-    -webkit-font-smoothing:antialiased;
-  }
-  .wrap{max-width:780px;margin:0 auto;padding:32px 20px 64px}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Karla',-apple-system,system-ui,sans-serif;background:var(--paper);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:860px;margin:0 auto;padding:28px 20px 64px}
+  .card-main{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);overflow:hidden}
 
-  /* Header */
-  .eyebrow{
-    font-size:12px;letter-spacing:.16em;text-transform:uppercase;
-    color:var(--blue);font-weight:700;margin:0 0 10px
-  }
-  .eyebrow span{color:var(--gold)}
-  h1{
-    font-family:'Fraunces',Georgia,serif;font-weight:600;
-    font-size:clamp(28px,5vw,40px);line-height:1.12;color:var(--navy);
-    margin:0 0 12px;letter-spacing:-.01em
-  }
-  .lede{font-size:16px;color:var(--muted);margin:0;max-width:62ch}
-  .rule{height:3px;width:64px;background:var(--gold);border:0;margin:20px 0 28px}
+  .header{background:var(--navy);color:#fff;padding:30px 34px}
+  .chapter-tag{display:inline-block;background:rgba(255,255,255,.14);color:#e9eef6;padding:5px 13px;border-radius:99px;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;margin-bottom:14px}
+  .chapter-tag span{color:var(--gold)}
+  .header h1{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:clamp(23px,4.2vw,33px);line-height:1.14;letter-spacing:-.01em;margin-bottom:8px}
+  .header p{font-size:14px;color:#b9c4d4}
+  .gold-rule{height:3px;width:60px;background:var(--gold);border:0;margin:16px 0 0}
+  .body{padding:30px 34px}
 
-  /* Progress + score bar */
-  .meta{
-    display:flex;align-items:center;justify-content:space-between;gap:16px;
-    flex-wrap:wrap;margin-bottom:24px
-  }
+  .identity{text-align:center;padding:14px 0}
+  .identity h2{font-family:'Fraunces',serif;font-weight:600;font-size:21px;color:var(--navy);margin-bottom:8px}
+  .identity p.sub{color:var(--muted);margin-bottom:26px;font-size:14.5px}
+  .form-group{margin-bottom:16px;text-align:left;max-width:420px;margin-left:auto;margin-right:auto}
+  .form-group label{display:block;font-size:13px;font-weight:700;color:var(--navy);margin-bottom:6px;letter-spacing:.02em}
+  .form-group input{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:9px;font-size:15px;font-family:'Karla',sans-serif;transition:border-color .2s;background:#fdfcf9}
+  .form-group input:focus{outline:none;border-color:var(--blue-2)}
+
+  .btn{cursor:pointer;font-family:'Karla',sans-serif;font-weight:700;font-size:15px;letter-spacing:.03em;border-radius:10px;transition:transform .12s,box-shadow .15s,filter .15s,background .15s}
+  .btn-primary{background:var(--blue);color:#fff;border:none;padding:13px 34px;margin:6px}
+  .btn-primary:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 20px rgba(31,78,121,.28)}
+  .btn-primary:disabled{opacity:.45;cursor:not-allowed}
+  .btn-gold{background:var(--gold);color:var(--navy)}
+  .btn-gold:hover:not(:disabled){filter:brightness(1.06);transform:translateY(-2px)}
+  .btn-secondary{background:#fff;color:var(--blue);border:1.5px solid var(--blue);padding:11px 28px;margin:6px}
+  .btn-secondary:hover:not(:disabled){background:#f0f4f9}
+  .btn-secondary:disabled{opacity:.4;cursor:not-allowed;border-color:#bbb;color:#bbb}
+
+  .stagiaire-bar{background:#efeadf;padding:11px 34px;border-bottom:1px solid var(--line);font-size:13px;color:var(--muted);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+  .stagiaire-bar strong{color:var(--navy)}
+
+  .rappel{background:#f7f4ec;border:1px solid var(--line);border-left:4px solid var(--blue-2);border-radius:10px;padding:15px 18px;margin-bottom:22px;font-size:13px;line-height:1.55;color:#3a4654}
+  .rappel h3{font-size:12px;color:var(--blue);margin-bottom:9px;text-transform:uppercase;letter-spacing:.1em;font-weight:700}
+  .rappel ul{list-style:none}
+  .rappel li{margin-bottom:7px;padding-left:16px;position:relative}
+  .rappel li::before{content:"";position:absolute;left:0;top:9px;width:6px;height:6px;border-radius:50%;background:var(--gold)}
+  .rappel b{color:var(--navy)} .ref-i{color:var(--blue);font-weight:600}
+
+  .section-title{font-family:'Fraunces',serif;font-weight:600;font-size:19px;color:var(--navy);margin:30px 0 4px;display:flex;align-items:center;gap:10px}
+  .section-title .pin{flex:none;width:26px;height:26px;border-radius:50%;background:var(--blue);color:#fff;font-family:'Karla';font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center}
+  .section-sub{color:var(--muted);font-size:13.5px;margin-bottom:16px;padding-left:36px}
+
+  .consigne{background:#fff;border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:10px;padding:12px 16px;margin-bottom:18px;font-size:13.5px;line-height:1.5;color:#3a4654}
+  .consigne b{color:var(--navy)}
+
+  .meta{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:8px}
   .progress{flex:1;min-width:180px}
   .progress .track{height:8px;background:#e6e0d3;border-radius:99px;overflow:hidden}
-  .progress .fill{height:100%;width:0;background:var(--blue-2);border-radius:99px;transition:width .45s cubic-bezier(.2,.7,.2,1)}
-  .progress .label{font-size:12.5px;color:var(--muted);margin-top:6px;letter-spacing:.02em}
-  .scorepill{
-    font-family:'Fraunces',serif;font-weight:600;color:var(--navy);
-    background:var(--card);border:1px solid var(--line);border-radius:99px;
-    padding:8px 16px;font-size:15px;box-shadow:var(--shadow)
-  }
-  .scorepill b{color:var(--blue);font-size:18px}
+  .progress .fill{height:100%;width:0;background:var(--blue-2);border-radius:99px;transition:width .4s cubic-bezier(.2,.7,.2,1)}
+  .progress .plabel{font-size:12.5px;color:var(--muted);margin-top:6px}
+  .scorepill{font-family:'Fraunces',serif;font-weight:600;color:var(--navy);background:#fff;border:1px solid var(--line);border-radius:99px;padding:7px 15px;font-size:14.5px}
+  .scorepill b{color:var(--blue);font-size:17px}
 
-  /* Cards */
-  .q{
-    background:var(--card);border:1px solid var(--line);border-radius:14px;
-    padding:22px 24px;margin:0 0 18px;box-shadow:var(--shadow);
-    opacity:0;transform:translateY(12px);
-    animation:rise .5s cubic-bezier(.2,.7,.2,1) forwards
-  }
-  @keyframes rise{to{opacity:1;transform:none}}
-  .q-top{display:flex;gap:14px;align-items:flex-start}
-  .num{
-    flex:none;width:34px;height:34px;border-radius:50%;
-    background:var(--navy);color:#fff;font-family:'Fraunces',serif;font-weight:600;
-    display:flex;align-items:center;justify-content:center;font-size:15px;margin-top:1px
-  }
-  .stmt{font-size:17px;color:var(--ink);font-weight:500;line-height:1.5}
+  /* Pool + colonnes */
+  .pool{background:#faf7f0;border:2px dashed #d8d0bf;border-radius:11px;padding:14px;margin-bottom:18px}
+  .pool-title{font-size:11.5px;font-weight:700;color:#9a8f78;text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px}
+  .pool-grid{display:grid;grid-template-columns:1fr;gap:8px;min-height:40px}
+  .pool-grid:empty::after{content:"Toutes les étiquettes sont classées ✓";display:block;text-align:center;color:var(--ok);font-weight:700;font-size:13px;padding:10px}
 
-  .choices{display:flex;gap:12px;margin:18px 0 0 48px}
-  @media(max-width:520px){.choices{margin-left:0}}
-  .btn{
-    flex:1;cursor:pointer;font-family:'Karla',sans-serif;font-weight:700;
-    font-size:15px;letter-spacing:.03em;padding:13px 10px;border-radius:10px;
-    border:1.5px solid var(--line);background:#fff;color:var(--navy);
-    transition:transform .12s ease,border-color .15s ease,background .15s ease
-  }
-  .btn:hover:not(:disabled){border-color:var(--blue-2);transform:translateY(-1px)}
-  .btn:active:not(:disabled){transform:translateY(0)}
-  .btn:disabled{cursor:default}
-  .btn .ic{font-style:normal;margin-right:7px}
-  .btn.sel-ok{background:var(--ok-bg);border-color:var(--ok);color:var(--ok)}
-  .btn.sel-ko{background:var(--ko-bg);border-color:var(--ko);color:var(--ko)}
-  .btn.reveal-ok{border-color:var(--ok);color:var(--ok)}
-  .btn.dim{opacity:.45}
+  .chip{background:#fff;border:1.5px solid var(--line);border-radius:9px;padding:11px 13px;font-size:13.5px;cursor:grab;transition:all .15s;user-select:none;line-height:1.45;position:relative}
+  .chip:hover:not(.locked){border-color:var(--blue-2);background:#f6f9fd;transform:translateY(-1px);box-shadow:0 2px 6px rgba(31,78,121,.12)}
+  .chip.dragging{opacity:.4;cursor:grabbing}
+  .chip.locked{cursor:default}
+  .chip.placed.correct{background:var(--ok-bg);border-color:var(--ok)}
+  .chip.placed.wrong{background:var(--ko-bg);border-color:var(--ko)}
+  .chip .fbk{display:none;margin-top:8px;padding-top:8px;border-top:1px dashed rgba(0,0,0,.14);font-size:11.5px;line-height:1.5;font-style:italic;color:#555}
+  .chip.placed .fbk{display:block}
+  .chip.placed.correct .fbk{color:#1c5234} .chip.placed.wrong .fbk{color:#7a2222}
+  .chip .fbk strong{font-style:normal}
 
-  .fb{
-    margin:16px 0 0 48px;border-left:3px solid var(--line);padding:2px 0 2px 16px;
-    font-size:14.5px;color:var(--muted);max-height:0;overflow:hidden;opacity:0;
-    transition:max-height .4s ease,opacity .35s ease,padding .3s ease
-  }
-  @media(max-width:520px){.fb{margin-left:0}}
-  .fb.show{max-height:320px;opacity:1}
-  .fb .verdict{font-weight:700;font-family:'Karla',sans-serif;letter-spacing:.02em}
-  .fb.good{border-color:var(--ok)} .fb.good .verdict{color:var(--ok)}
-  .fb.bad{border-color:var(--ko)} .fb.bad .verdict{color:var(--ko)}
-  .fb .ref{display:inline-block;margin-top:7px;font-size:12.5px;color:var(--blue);
-    background:#eef3f9;border-radius:6px;padding:3px 9px;font-weight:600}
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:8px}
+  @media(max-width:600px){.cols{grid-template-columns:1fr}}
+  .col{border-radius:11px;overflow:hidden;border:1.5px solid var(--line)}
+  .col-head{padding:13px 14px;color:#fff;font-weight:700;font-size:13.5px;text-align:center;text-transform:uppercase;letter-spacing:.06em}
+  .col.prov .col-head{background:var(--blue-2)}
+  .col.def .col-head{background:var(--gold);color:var(--navy)}
+  .dz{background:#fbfaf6;padding:11px;min-height:170px;transition:background .15s}
+  .dz.over{background:#eef3f9}
+  .col.def .dz.over{background:#f6efe2}
+  .dz .chip{margin-bottom:8px;width:100%}
+  .dz-empty{text-align:center;color:#b7ae9c;font-style:italic;font-size:12px;padding:26px 8px}
 
-  /* Result */
-  .result{
-    background:var(--navy);color:#fff;border-radius:16px;padding:30px 28px;margin-top:8px;
-    text-align:center;display:none;box-shadow:var(--shadow)
-  }
-  .result.show{display:block;animation:rise .5s ease forwards}
-  .result .big{font-family:'Fraunces',serif;font-size:46px;font-weight:600;line-height:1}
-  .result .big small{font-size:22px;color:#9fb6d4;font-weight:400}
-  .result .msg{font-size:16px;margin:14px auto 0;max-width:48ch;color:#dce6f2}
-  .result .ring{
-    width:96px;height:96px;border-radius:50%;margin:0 auto 16px;
-    display:flex;align-items:center;justify-content:center;
-    background:conic-gradient(var(--gold) var(--deg,0deg),#2c3e5a 0)
-  }
-  .result .ring i{width:78px;height:78px;border-radius:50%;background:var(--navy);
-    display:flex;align-items:center;justify-content:center;font-style:normal;
-    font-family:'Fraunces',serif;font-size:22px;font-weight:600}
-  .restart{
-    margin-top:22px;cursor:pointer;font-family:'Karla';font-weight:700;font-size:15px;
-    letter-spacing:.03em;color:var(--navy);background:var(--gold);border:0;
-    border-radius:10px;padding:12px 26px;transition:transform .12s ease,filter .15s ease
-  }
-  .restart:hover{filter:brightness(1.06);transform:translateY(-1px)}
+  /* Calcul */
+  .scenario{background:#eef3f9;border:1px solid #cfe0f0;border-left:4px solid var(--blue);border-radius:10px;padding:14px 16px;margin-bottom:16px;font-size:14px;line-height:1.55;color:#26405c}
+  .scenario b{color:var(--navy)}
+  .cq{background:#fff;border:1px solid var(--line);border-radius:11px;padding:16px 18px;margin-bottom:13px;box-shadow:var(--shadow)}
+  .cq .ask{font-weight:600;font-size:15px;color:var(--ink);margin-bottom:10px;display:flex;gap:10px;align-items:flex-start}
+  .cq .ask .qn{flex:none;width:26px;height:26px;border-radius:50%;background:var(--navy);color:#fff;font-family:'Fraunces',serif;font-weight:600;font-size:13px;display:flex;align-items:center;justify-content:center;margin-top:1px}
+  select.cs{width:100%;padding:11px 13px;border:1.5px solid var(--line);border-radius:9px;font-size:14.5px;font-family:'Karla',sans-serif;background:#fdfcf9;color:var(--ink);cursor:pointer;transition:border-color .15s}
+  select.cs:focus{outline:none;border-color:var(--blue-2)}
+  select.cs:disabled{cursor:default;opacity:1}
+  select.cs.ok{border-color:var(--ok);background:var(--ok-bg);color:var(--ok)}
+  select.cs.ko{border-color:var(--ko);background:var(--ko-bg);color:var(--ko)}
+  .cfb{max-height:0;overflow:hidden;opacity:0;transition:max-height .4s,opacity .35s;font-size:13px;border-left:3px solid var(--line);margin-top:0;padding-left:14px}
+  .cfb.show{max-height:260px;opacity:1;margin-top:12px}
+  .cfb.good{border-color:var(--ok);color:#1c5234} .cfb.bad{border-color:var(--ko);color:#7a2222}
+  .cfb .vd{font-weight:700}
+  .cfb .ref{display:inline-block;margin-top:6px;font-size:12px;color:var(--blue);background:#eef3f9;border-radius:6px;padding:2px 8px;font-weight:600}
 
-  footer{margin-top:34px;text-align:center;font-size:12px;color:#9a9384;letter-spacing:.04em}
+  .actions{margin-top:24px;text-align:center}
+
+  .result-screen{text-align:center;padding:20px 0}
+  .score-circle{width:128px;height:128px;border-radius:50%;margin:0 auto 18px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;box-shadow:0 8px 24px rgba(22,36,59,.18)}
+  .score-circle.excellent{background:var(--ok)} .score-circle.good{background:var(--blue)}
+  .score-circle.average{background:var(--amber)} .score-circle.poor{background:var(--ko)}
+  .score-circle .sv{font-family:'Fraunces',serif;font-size:28px;font-weight:600}
+  .score-circle .sl{font-size:12px;opacity:.95;margin-top:2px;letter-spacing:.05em}
+  .result-msg{font-family:'Fraunces',serif;font-size:20px;font-weight:600;margin-bottom:8px;color:var(--navy)}
+  .result-detail{color:var(--muted);font-size:14px;margin-bottom:22px;max-width:56ch;margin-left:auto;margin-right:auto}
+  .subscore{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:18px}
+  .subscore .box{background:#f7f4ec;border:1px solid var(--line);border-radius:10px;padding:10px 18px;font-size:13px;color:var(--muted)}
+  .subscore .box b{display:block;font-family:'Fraunces',serif;font-size:20px;color:var(--navy);margin-top:2px}
+  .pdf-info{background:var(--amber-bg);border-left:4px solid var(--amber);padding:12px 16px;border-radius:8px;text-align:left;font-size:13px;color:#6d4c00;margin:18px 0}
+  .pdf-info strong{display:block;margin-bottom:4px}
+  .note{background:#eef3f9;border-left:4px solid var(--blue-2);padding:12px 16px;border-radius:8px;text-align:left;font-size:13px;color:var(--blue);margin:16px 0;line-height:1.5}
+  footer{margin-top:26px;text-align:center;font-size:12px;color:#9a9384;letter-spacing:.04em}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <header>
-    <p class="eyebrow">TMK Performances · Concilian — Recouvrement &nbsp;<span>/</span>&nbsp; Module 2 · Activité 1b</p>
-    <h1>Vrai ou Faux&nbsp;: le cadre général de l'exécution forcée</h1>
-    <p class="lede">Huit affirmations pour ancrer les fondamentaux vus en vidéo&nbsp;: les acteurs de l'exécution, les biens saisissables et les conditions que doit réunir la créance. Tranchez, puis lisez la justification.</p>
-    <hr class="rule">
-  </header>
-
-  <div class="meta">
-    <div class="progress">
-      <div class="track"><div class="fill" id="fill"></div></div>
-      <div class="label" id="plabel">0 / 8 répondu</div>
+  <div class="card-main">
+    <div class="header">
+      <div class="chapter-tag">TMK Performances · Concilian — Module 2 <span>/</span> Activité 2b</div>
+      <h1>L'astreinte&nbsp;: provisoire ou définitive, et sa liquidation</h1>
+      <p>Tri des caractéristiques · Mini-calcul de liquidation guidé</p>
+      <hr class="gold-rule">
     </div>
-    <div class="scorepill">Score&nbsp;: <b id="score">0</b> / 8</div>
+
+    <!-- IDENTITÉ -->
+    <div id="screen-identity" class="body">
+      <div class="identity">
+        <h2>Avant de commencer</h2>
+        <p class="sub">Renseignez vos informations pour personnaliser votre attestation de fin d'exercice.</p>
+        <div class="form-group"><label for="nom">Nom</label><input type="text" id="nom" placeholder="Votre nom de famille" autocomplete="family-name"></div>
+        <div class="form-group"><label for="prenom">Prénom</label><input type="text" id="prenom" placeholder="Votre prénom" autocomplete="given-name"></div>
+        <button class="btn btn-primary" id="btn-start" disabled onclick="startQuiz()">Commencer l'exercice</button>
+      </div>
+    </div>
+
+    <!-- EXERCICE -->
+    <div id="screen-quiz" style="display:none;">
+      <div class="stagiaire-bar"><span>Stagiaire&nbsp;: <strong id="stagiaire-name"></strong></span><span id="date-quiz"></span></div>
+      <div class="body">
+        <div class="rappel">
+          <h3>Rappel — l'astreinte</h3>
+          <ul>
+            <li>L'astreinte est un <b>moyen de pression</b> (et non une mesure d'exécution), indépendant des dommages-intérêts <span class="ref-i">(L. 131-1 et s. CPCE)</span>.</li>
+            <li><b>Astreinte provisoire</b> (droit commun)&nbsp;: modifiable à tout moment&nbsp;; liquidée selon le <b>comportement du débiteur</b> et les <b>difficultés rencontrées</b> <span class="ref-i">(L. 131-4)</span>.</li>
+            <li><b>Astreinte définitive</b> (subsidiaire)&nbsp;: ne peut être prononcée qu'<b>après une astreinte provisoire</b> et pour une <b>durée déterminée</b>&nbsp;; son taux est <b>intangible</b> à la liquidation <span class="ref-i">(L. 131-2 al. 3)</span>.</li>
+            <li>La <b>liquidation</b> relève du <b>juge de l'exécution</b>, sauf si le juge qui a prononcé l'astreinte s'en est réservé le pouvoir.</li>
+          </ul>
+        </div>
+
+        <div class="meta">
+          <div class="progress"><div class="track"><div class="fill" id="fill"></div></div><div class="plabel" id="plabel">0 / 12 complété</div></div>
+          <div class="scorepill">Score&nbsp;: <b id="score">—</b> / 12</div>
+        </div>
+
+        <!-- PARTIE A : TRI -->
+        <div class="section-title"><span class="pin">A</span> Tri des caractéristiques</div>
+        <div class="section-sub">Provisoire ou définitive&nbsp;? Glissez chaque étiquette dans la bonne colonne (8 étiquettes).</div>
+        <div class="consigne"><b>🎯 Consigne&nbsp;:</b> classez chacune des 8 caractéristiques selon qu'elle décrit une <b>astreinte provisoire</b> ou une <b>astreinte définitive</b>.</div>
+
+        <div class="pool"><div class="pool-title">📦 Étiquettes à classer</div><div class="pool-grid" id="pool"></div></div>
+
+        <div class="cols">
+          <div class="col prov"><div class="col-head">Astreinte provisoire</div><div class="dz" id="zone-prov" data-zone="provisoire"><div class="dz-empty" id="empty-prov">Déposez ici les caractéristiques de l'astreinte provisoire</div></div></div>
+          <div class="col def"><div class="col-head">Astreinte définitive</div><div class="dz" id="zone-def" data-zone="definitive"><div class="dz-empty" id="empty-def">Déposez ici les caractéristiques de l'astreinte définitive</div></div></div>
+        </div>
+
+        <!-- PARTIE B : CALCUL -->
+        <div class="section-title"><span class="pin">B</span> Mini-calcul de liquidation</div>
+        <div class="section-sub">Lisez le scénario, puis répondez aux 4 questions.</div>
+        <div class="scenario">Par jugement, une société est condamnée à restituer des pièces sous <b>astreinte provisoire de 150 € par jour de retard</b>, courant à compter de la signification. Le jugement est <b>signifié le 1ᵉʳ avril</b>&nbsp;; la société restitue les pièces le <b>21 avril</b>.</div>
+        <div id="calc"></div>
+
+        <div class="actions"><button class="btn btn-primary" id="btn-validate" disabled onclick="validateQuiz()">Valider l'exercice</button></div>
+      </div>
+    </div>
+
+    <!-- RÉSULTAT -->
+    <div id="screen-result" style="display:none;">
+      <div class="stagiaire-bar"><span>Stagiaire&nbsp;: <strong id="stagiaire-name-2"></strong></span><span id="date-quiz-2"></span></div>
+      <div class="body">
+        <div class="result-screen">
+          <div class="score-circle" id="score-circle"><div class="sv" id="score-value">0/12</div><div class="sl">points</div></div>
+          <div class="result-msg" id="result-message"></div>
+          <div class="subscore">
+            <div class="box">Partie A — Tri<b id="sub-a">0 / 8</b></div>
+            <div class="box">Partie B — Calcul<b id="sub-b">0 / 4</b></div>
+          </div>
+          <div class="result-detail" id="result-detail"></div>
+
+          <div class="pdf-info"><strong>⚠ Attention</strong>Vous pouvez générer votre attestation au format PDF <u>une seule fois</u>. Après téléchargement, vous pourrez refaire l'exercice, mais aucun nouveau PDF ne pourra être généré pour cette session.</div>
+
+          <div class="actions">
+            <button class="btn btn-gold" id="btn-pdf" onclick="generatePDF()">📄 Télécharger mon attestation PDF</button>
+            <button class="btn btn-secondary" id="btn-restart" onclick="restartQuiz()">↻ Refaire l'exercice</button>
+          </div>
+          <div class="note" id="note-after-pdf" style="display:none;">✓ Votre PDF a été téléchargé. Vous pouvez refaire l'exercice, mais le bouton de génération PDF est désormais désactivé pour cette session.</div>
+        </div>
+      </div>
+    </div>
+
+    <footer>TMK Performances · Synthèse pédagogique · Document interne</footer>
   </div>
-
-  <main id="quiz"></main>
-
-  <section class="result" id="result">
-    <div class="ring" id="ring"><i id="ringtxt">0/8</i></div>
-    <div class="big"><span id="rscore">0</span><small> / 8</small></div>
-    <p class="msg" id="rmsg"></p>
-    <button class="restart" id="restart">Recommencer le quiz</button>
-  </section>
-
-  <footer>TMK Performances · Synthèse pédagogique · Document interne</footer>
 </div>
 
 <script>
-const QUESTIONS = [
-  {
-    s: "Le juge de l'exécution peut modifier le dispositif de la décision qui sert de fondement aux poursuites.",
-    a: false,
-    e: "Le JEX tranche les difficultés et contestations nées de l'exécution, mais il ne peut ni modifier le dispositif de la décision, ni en suspendre l'exécution.",
-    ref: "art. R. 121-1 CPCE"
-  },
-  {
-    s: "Depuis le 1ᵉʳ juillet 2022, l'huissier de justice et le commissaire-priseur judiciaire ont fusionné en une seule profession : le commissaire de justice.",
-    a: true,
-    e: "Le commissaire de justice, issu de cette fusion, détient le monopole des mesures d'exécution forcée et conservatoires.",
-    ref: "art. L. 122-1 CPCE"
-  },
-  {
-    s: "L'appel d'une décision du juge de l'exécution se forme dans un délai de 15 jours et il suspend l'exécution.",
-    a: false,
-    e: "Le délai d'appel est bien de 15 jours à compter de la notification, mais cet appel n'est pas suspensif : l'exécution peut se poursuivre.",
-    ref: "art. R. 121-19 CPCE"
-  },
-  {
-    s: "En principe, tous les biens du débiteur sont saisissables, car ils constituent le gage commun de ses créanciers.",
-    a: true,
-    e: "C'est le principe du gage commun ; les insaisissabilités (biens vitaux, créances alimentaires, immunités…) ne sont que des exceptions.",
-    ref: "art. 2284 C. civ."
-  },
-  {
-    s: "Lors d'une saisie sur un compte bancaire, la totalité du solde disponible peut être appréhendée.",
-    a: false,
-    e: "Un solde bancaire insaisissable (SBI), équivalent au montant forfaitaire du RSA, est automatiquement laissé au débiteur sur son compte.",
-    ref: "art. L. 162-2 CPCE"
-  },
-  {
-    s: "Le commissaire de justice peut accéder directement aux informations administratives et bancaires du débiteur, sans passer par le ministère public.",
-    a: true,
-    e: "Il interroge directement les administrations et les banques (adresse, employeur, comptes) pour localiser le débiteur et ses avoirs.",
-    ref: "art. L. 152-1 et L. 152-2 CPCE"
-  },
-  {
-    s: "Une créance soumise à une condition suspensive non encore réalisée peut faire l'objet d'une mesure d'exécution forcée.",
-    a: false,
-    e: "La créance doit être actuelle : elle ne doit pas être éventuelle. Une condition suspensive non réalisée fait obstacle à l'exécution. La créance doit aussi être liquide et exigible.",
-    ref: "conditions de fond — art. L. 111-6 CPCE"
-  },
-  {
-    s: "Seul un titre exécutoire figurant dans la liste de l'article L. 111-3 du CPCE autorise les mesures d'exécution forcée.",
-    a: true,
-    e: "La liste des titres exécutoires est exhaustive : aucun titre ne peut être admis par analogie.",
-    ref: "art. L. 111-3 CPCE"
-  }
+const TRI = [
+  { id:"T1", type:"provisoire", text:"En l'absence de précision du juge, l'astreinte est réputée prononcée à ce titre : c'est le droit commun.",
+    expl:"L'astreinte est provisoire à moins que le juge n'ait expressément précisé son caractère définitif (art. L. 131-2 CPCE)." },
+  { id:"T2", type:"provisoire", text:"Le juge peut en modifier le montant à tout moment.",
+    expl:"Modifiable jusqu'à la liquidation : c'est la souplesse propre à l'astreinte provisoire." },
+  { id:"T3", type:"provisoire", text:"À la liquidation, le juge tient compte du comportement du débiteur et des difficultés qu'il a rencontrées.",
+    expl:"Ce sont les deux critères de liquidation de l'astreinte provisoire (art. L. 131-4 CPCE)." },
+  { id:"T4", type:"provisoire", text:"Fixé haut pour faire pression, son montant est souvent réduit au stade de la liquidation.",
+    expl:"Le caractère comminatoire conduit à un montant élevé, fréquemment minoré lors de la liquidation." },
+  { id:"T5", type:"definitive", text:"Elle ne peut être prononcée qu'après une première astreinte provisoire.",
+    expl:"Caractère subsidiaire de l'astreinte définitive (art. L. 131-2 al. 3 CPCE)." },
+  { id:"T6", type:"definitive", text:"Elle doit être prononcée pour une durée déterminée.",
+    expl:"La durée déterminée est une condition de l'astreinte définitive (art. L. 131-2 al. 3 CPCE)." },
+  { id:"T7", type:"definitive", text:"Son taux ne peut pas être modifié au stade de la liquidation.",
+    expl:"À la différence de l'astreinte provisoire, le taux de l'astreinte définitive est intangible." },
+  { id:"T8", type:"definitive", text:"Subsidiaire et intangible, elle demeure rare en pratique.",
+    expl:"Conditions strictes + intangibilité du taux : les juges la prononcent rarement." }
 ];
 
-const TOTAL = QUESTIONS.length;
-let answered = 0, score = 0;
-const quiz = document.getElementById('quiz');
+const CALC = [
+  { ask:"Sur combien de jours l'astreinte a-t-elle couru ?",
+    options:["18 jours","20 jours","21 jours","30 jours"], correct:1,
+    expl:"Du 1ᵉʳ au 21 avril, l'astreinte a couru pendant 20 jours de retard.", ref:"calcul du retard" },
+  { ask:"Quel est le montant théorique de l'astreinte avant liquidation ?",
+    options:["2 850 €","3 000 €","3 150 €","4 500 €"], correct:1,
+    expl:"150 € × 20 jours = 3 000 €. C'est le montant avant toute modulation par le juge.", ref:"150 € × 20 j" },
+  { ask:"Qui est en principe compétent pour liquider cette astreinte ?",
+    options:["Le commissaire de justice","Le juge de l'exécution (JEX)","Le procureur de la République","Le greffe du tribunal"], correct:1,
+    expl:"La liquidation relève du JEX, sauf si le juge qui a prononcé l'astreinte s'en est réservé le pouvoir.", ref:"compétence du JEX" },
+  { ask:"Le débiteur, de bonne foi, a rencontré une réelle difficulté matérielle. Que peut décider le JEX ?",
+    options:[
+      "Augmenter le montant car le retard est avéré",
+      "Réduire le montant selon le comportement et les difficultés du débiteur",
+      "Rien : le taux d'une astreinte est toujours intangible",
+      "Transformer l'astreinte en dommages-intérêts"
+    ], correct:1,
+    expl:"L'astreinte étant provisoire, le JEX module selon le comportement et les difficultés du débiteur (art. L. 131-4) ; le taux n'est intangible que pour l'astreinte définitive.", ref:"art. L. 131-4 CPCE" }
+];
 
-function render(){
-  quiz.innerHTML = '';
-  QUESTIONS.forEach((q, i) => {
-    const card = document.createElement('article');
-    card.className = 'q';
-    card.style.animationDelay = (i * 70) + 'ms';
-    card.innerHTML = `
-      <div class="q-top">
-        <div class="num">${i+1}</div>
-        <p class="stmt">${q.s}</p>
-      </div>
-      <div class="choices">
-        <button class="btn" data-i="${i}" data-v="true"><span class="ic">✓</span>Vrai</button>
-        <button class="btn" data-i="${i}" data-v="false"><span class="ic">✕</span>Faux</button>
-      </div>
-      <div class="fb" id="fb-${i}"></div>`;
-    quiz.appendChild(card);
-  });
-  quiz.querySelectorAll('.btn').forEach(b => b.addEventListener('click', onAnswer));
+const N_TRI = TRI.length, N_CALC = CALC.length, TOTAL = N_TRI + N_CALC;
+const state = { nom:"", prenom:"", placements:{}, calc:{}, validated:false, scoreTri:0, scoreCalc:0, pdfGenerated:false, dateQuiz:null };
+
+document.getElementById("nom").addEventListener("input", checkIdentity);
+document.getElementById("prenom").addEventListener("input", checkIdentity);
+function checkIdentity(){const n=document.getElementById("nom").value.trim(),p=document.getElementById("prenom").value.trim();document.getElementById("btn-start").disabled=!(n&&p);}
+
+function startQuiz(){
+  state.nom=document.getElementById("nom").value.trim().toUpperCase();
+  let p=document.getElementById("prenom").value.trim();
+  state.prenom=p.charAt(0).toUpperCase()+p.slice(1).toLowerCase();
+  state.dateQuiz=new Date();
+  const full=state.prenom+" "+state.nom;
+  document.getElementById("stagiaire-name").textContent=full;
+  document.getElementById("stagiaire-name-2").textContent=full;
+  const d=state.dateQuiz.toLocaleDateString("fr-FR",{day:"2-digit",month:"long",year:"numeric"});
+  document.getElementById("date-quiz").textContent=d; document.getElementById("date-quiz-2").textContent=d;
+  document.getElementById("screen-identity").style.display="none";
+  document.getElementById("screen-quiz").style.display="block";
+  render();
 }
 
-function onAnswer(e){
-  const btn = e.currentTarget;
-  const i = +btn.dataset.i;
-  const choice = btn.dataset.v === 'true';
-  const q = QUESTIONS[i];
-  const card = btn.closest('.q');
-  if (card.dataset.done) return;
-  card.dataset.done = '1';
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 
-  const btns = card.querySelectorAll('.btn');
-  const correct = (choice === q.a);
-  if (correct) score++;
-  answered++;
+function render(){
+  const pool=document.getElementById("pool");
+  pool.innerHTML="";
+  shuffle([...TRI]).forEach((t,idx)=>{
+    pool.innerHTML+=`<div class="chip" draggable="true" data-id="${t.id}"><span style="display:inline-block;background:var(--blue-2);color:#fff;font-weight:700;padding:1px 7px;border-radius:5px;margin-right:8px;font-size:11px;">${idx+1}</span>${t.text}<div class="fbk"></div></div>`;
+  });
+  document.getElementById("zone-prov").innerHTML='<div class="dz-empty" id="empty-prov">Déposez ici les caractéristiques de l\'astreinte provisoire</div>';
+  document.getElementById("zone-def").innerHTML='<div class="dz-empty" id="empty-def">Déposez ici les caractéristiques de l\'astreinte définitive</div>';
 
-  btns.forEach(b => {
-    b.disabled = true;
-    const bv = b.dataset.v === 'true';
-    if (b === btn) b.classList.add(correct ? 'sel-ok' : 'sel-ko');
-    if (bv === q.a && !correct) b.classList.add('reveal-ok');
-    if (b !== btn && !(bv === q.a && !correct)) b.classList.add('dim');
+  const calc=document.getElementById("calc");
+  calc.innerHTML="";
+  CALC.forEach((c,i)=>{
+    let opts='<option value="">— choisir une réponse —</option>';
+    c.options.forEach((o,oi)=>opts+=`<option value="${oi}">${o}</option>`);
+    calc.innerHTML+=`<div class="cq"><div class="ask"><span class="qn">${i+1}</span><span>${c.ask}</span></div><select class="cs" data-q="${i}">${opts}</select><div class="cfb" id="cfb-${i}"></div></div>`;
   });
 
-  const fb = document.getElementById('fb-' + i);
-  fb.className = 'fb ' + (correct ? 'good' : 'bad');
-  const verdict = correct
-    ? 'Exact.'
-    : 'Réponse attendue : ' + (q.a ? 'Vrai' : 'Faux') + '.';
-  fb.innerHTML = `<span class="verdict">${verdict}</span> ${q.e}<br><span class="ref">${q.ref}</span>`;
-  requestAnimationFrame(() => fb.classList.add('show'));
-
+  initDnD();
+  document.querySelectorAll("select.cs").forEach(s=>s.addEventListener("change",onSelect));
   update();
 }
 
+let dragSrc=null;
+function initDnD(){
+  document.querySelectorAll(".chip").forEach(el=>{
+    el.addEventListener("dragstart",e=>{if(state.validated){e.preventDefault();return;}dragSrc=el;el.classList.add("dragging");e.dataTransfer.effectAllowed="move";});
+    el.addEventListener("dragend",()=>{el.classList.remove("dragging");dragSrc=null;});
+  });
+  ["zone-prov","zone-def"].forEach(zid=>{
+    const z=document.getElementById(zid);
+    z.addEventListener("dragover",e=>{if(state.validated)return;e.preventDefault();z.classList.add("over");});
+    z.addEventListener("dragleave",()=>z.classList.remove("over"));
+    z.addEventListener("drop",e=>{e.preventDefault();z.classList.remove("over");if(state.validated||!dragSrc)return;dropZone(z,dragSrc);});
+  });
+  const pool=document.getElementById("pool");
+  pool.addEventListener("dragover",e=>{if(state.validated)return;e.preventDefault();});
+  pool.addEventListener("drop",e=>{e.preventDefault();if(state.validated||!dragSrc)return;document.getElementById("pool").appendChild(dragSrc);delete state.placements[dragSrc.dataset.id];refreshPH();update();});
+}
+function dropZone(z,src){
+  const ph=z.querySelector(".dz-empty"); if(ph) ph.remove();
+  z.appendChild(src); state.placements[src.dataset.id]=z.dataset.zone;
+  refreshPH(); update();
+}
+function refreshPH(){
+  [["prov","provisoire","Déposez ici les caractéristiques de l'astreinte provisoire"],["def","definitive","Déposez ici les caractéristiques de l'astreinte définitive"]].forEach(([s,_z,msg])=>{
+    const z=document.getElementById("zone-"+s);
+    if(z.querySelectorAll(".chip").length===0 && !z.querySelector(".dz-empty")) z.innerHTML=`<div class="dz-empty" id="empty-${s}">${msg}</div>`;
+  });
+}
+function onSelect(e){ if(state.validated)return; const i=+e.currentTarget.dataset.q; const v=e.currentTarget.value; if(v==="") delete state.calc[i]; else state.calc[i]=+v; update(); }
+
 function update(){
-  document.getElementById('score').textContent = score;
-  document.getElementById('fill').style.width = (answered / TOTAL * 100) + '%';
-  document.getElementById('plabel').textContent = answered + ' / ' + TOTAL + ' répondu' + (answered>1?'es':'');
-  if (answered === TOTAL) finish();
+  const done=Object.keys(state.placements).length+Object.keys(state.calc).length;
+  document.getElementById("fill").style.width=(done/TOTAL*100)+"%";
+  document.getElementById("plabel").textContent=done+" / "+TOTAL+" complété"+(done>1?"s":"");
+  document.getElementById("btn-validate").disabled=(done!==TOTAL);
 }
 
-function finish(){
-  const pct = Math.round(score / TOTAL * 100);
-  let msg;
-  if (score === TOTAL) msg = "Sans faute. Les fondamentaux du cadre de l'exécution forcée sont parfaitement en place.";
-  else if (score >= 6) msg = "Très solide. Revoyez les justifications des points manqués avant de passer à la suite.";
-  else if (score >= 4) msg = "Base correcte, mais quelques notions à consolider : relisez les affirmations corrigées ci-dessus.";
-  else msg = "À retravailler. Reprenez la vidéo I et les justifications du quiz, puis recommencez.";
-
-  const r = document.getElementById('result');
-  document.getElementById('rscore').textContent = score;
-  document.getElementById('rmsg').textContent = msg;
-  document.getElementById('ringtxt').textContent = score + '/' + TOTAL;
-  document.getElementById('ring').style.setProperty('--deg', (pct * 3.6) + 'deg');
-  r.classList.add('show');
-  r.scrollIntoView({behavior:'smooth', block:'center'});
+function validateQuiz(){
+  if(state.validated)return; state.validated=true;
+  let st=0, sc=0;
+  document.querySelectorAll(".chip").forEach(el=>{el.setAttribute("draggable","false");el.classList.add("locked","placed");});
+  TRI.forEach(t=>{
+    const ok=state.placements[t.id]===t.type; if(ok)st++;
+    const chip=document.querySelector(`.chip[data-id="${t.id}"]`);
+    if(chip){chip.classList.add(ok?"correct":"wrong");const f=chip.querySelector(".fbk");if(f)f.innerHTML=`<strong>${ok?"✓ Bon classement":"✗ Mauvais classement"} — ${t.type==="provisoire"?"astreinte provisoire":"astreinte définitive"}.</strong> ${t.expl}`;}
+  });
+  CALC.forEach((c,i)=>{
+    const sel=document.querySelector(`select.cs[data-q="${i}"]`); sel.disabled=true;
+    const chosen=state.calc[i]; const ok=(chosen===c.correct); if(ok)sc++;
+    sel.classList.add(ok?"ok":"ko");
+    const f=document.getElementById("cfb-"+i);
+    f.className="cfb "+(ok?"good":"bad");
+    const vd=ok?"Exact.":("Bonne réponse : "+c.options[c.correct]+".");
+    f.innerHTML=`<span class="vd">${vd}</span> ${c.expl}<br><span class="ref">${c.ref}</span>`;
+    requestAnimationFrame(()=>f.classList.add("show"));
+  });
+  state.scoreTri=st; state.scoreCalc=sc;
+  document.getElementById("score").textContent=st+sc;
+  document.getElementById("btn-validate").disabled=true;
+  showResults();
 }
 
-document.getElementById('restart').addEventListener('click', () => {
-  answered = 0; score = 0;
-  document.getElementById('result').classList.remove('show');
-  render(); update();
-  window.scrollTo({top:0, behavior:'smooth'});
-});
+function showResults(){
+  const total=state.scoreTri+state.scoreCalc, pct=Math.round(total/TOTAL*100);
+  document.getElementById("screen-result").style.display="block";
+  document.getElementById("score-value").textContent=total+"/"+TOTAL;
+  document.getElementById("sub-a").textContent=state.scoreTri+" / "+N_TRI;
+  document.getElementById("sub-b").textContent=state.scoreCalc+" / "+N_CALC;
+  const c=document.getElementById("score-circle"),m=document.getElementById("result-message"),d=document.getElementById("result-detail");
+  c.className="score-circle";
+  if(pct>=90){c.classList.add("excellent");m.textContent="Excellent !";d.textContent="Vous distinguez nettement l'astreinte provisoire de l'astreinte définitive et vous maîtrisez la logique de liquidation par le JEX.";}
+  else if(pct>=70){c.classList.add("good");m.textContent="Bon résultat";d.textContent="Bonne maîtrise d'ensemble. Relisez les justifications des points manqués, en particulier sur l'intangibilité du taux de l'astreinte définitive.";}
+  else if(pct>=50){c.classList.add("average");m.textContent="Résultat moyen";d.textContent="Acquis partiels. La clé : l'astreinte provisoire se module (comportement + difficultés, L. 131-4), l'astreinte définitive non. Reprenez le rappel puis recommencez.";}
+  else{c.classList.add("poor");m.textContent="À retravailler";d.textContent="Revoyez la vidéo II et le rappel sur l'astreinte (provisoire / définitive, critères de liquidation) avant de recommencer.";}
+  document.getElementById("screen-result").scrollIntoView({behavior:"smooth",block:"start"});
+}
 
-render(); update();
+function restartQuiz(){
+  state.placements={};state.calc={};state.validated=false;state.scoreTri=0;state.scoreCalc=0;state.dateQuiz=new Date();
+  const d=state.dateQuiz.toLocaleDateString("fr-FR",{day:"2-digit",month:"long",year:"numeric"});
+  document.getElementById("date-quiz").textContent=d;document.getElementById("date-quiz-2").textContent=d;
+  document.getElementById("score").textContent="—";
+  document.getElementById("screen-result").style.display="none";
+  render(); window.scrollTo({top:0,behavior:"smooth"});
+}
+
+/* ───────── PDF ───────── */
+function generatePDF(){
+  if(state.pdfGenerated)return;
+  const { jsPDF }=window.jspdf;
+  const doc=new jsPDF({unit:"mm",format:"a4"});
+  const pageW=doc.internal.pageSize.getWidth(), pageH=doc.internal.pageSize.getHeight();
+  const margin=18; let y=0;
+  const NAVY=[22,36,59],BLUE=[31,78,121],OKC=[47,122,79],KOC=[178,59,59];
+  const footer=()=>{const tp=doc.internal.getNumberOfPages();for(let i=1;i<=tp;i++){doc.setPage(i);doc.setFont("helvetica","italic");doc.setFontSize(8);doc.setTextColor(150,150,150);doc.text(`Page ${i} / ${tp}  —  TMK Performances · Module 2 · Activité 2b — L'astreinte`,pageW/2,pageH-8,{align:"center"});}};
+  const ensure=(h)=>{if(y+h>pageH-18){doc.addPage();y=margin;}};
+
+  doc.setFillColor(...NAVY);doc.rect(0,0,pageW,38,"F");
+  doc.setTextColor(255,255,255);doc.setFont("helvetica","bold");doc.setFontSize(9);
+  doc.text("TMK PERFORMANCES · CONCILIAN — MODULE 2 · ACTIVITÉ 2b",margin,13);
+  doc.setFontSize(15);doc.text("Attestation — L'astreinte",margin,24);
+  doc.setFont("helvetica","normal");doc.setFontSize(10);
+  doc.text("Provisoire / définitive et liquidation",margin,32);
+  y=50;
+
+  doc.setFillColor(239,234,223);doc.rect(margin,y,pageW-2*margin,26,"F");
+  doc.setTextColor(...BLUE);doc.setFont("helvetica","bold");doc.setFontSize(11);doc.text("Stagiaire",margin+4,y+7);
+  doc.setFont("helvetica","normal");doc.setTextColor(40,40,40);doc.setFontSize(12);doc.text(`${state.prenom} ${state.nom}`,margin+4,y+15);
+  doc.setFontSize(9);doc.setTextColor(100,100,100);
+  const dS=state.dateQuiz.toLocaleDateString("fr-FR",{day:"2-digit",month:"long",year:"numeric"});
+  const tS=state.dateQuiz.toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"});
+  doc.text(`Exercice réalisé le ${dS} à ${tS}`,margin+4,y+22);
+  y+=36;
+
+  const total=state.scoreTri+state.scoreCalc, pct=Math.round(total/TOTAL*100);
+  let col=KOC,lab="À retravailler";
+  if(pct>=90){col=OKC;lab="Excellent";}else if(pct>=70){col=BLUE;lab="Bon résultat";}else if(pct>=50){col=[181,133,42];lab="Moyen";}
+  doc.setFillColor(...col);doc.rect(margin,y,pageW-2*margin,28,"F");
+  doc.setTextColor(255,255,255);doc.setFont("helvetica","bold");doc.setFontSize(22);doc.text(`${total} / ${TOTAL}`,margin+6,y+13);
+  doc.setFontSize(11);doc.text(`(${pct}%)  —  Tri ${state.scoreTri}/${N_TRI} · Calcul ${state.scoreCalc}/${N_CALC}`,margin+6,y+22);
+  doc.setFontSize(13);doc.text(lab,pageW-margin-6,y+17,{align:"right"});
+  y+=38;
+
+  doc.setFillColor(...NAVY);doc.rect(margin,y,pageW-2*margin,9,"F");
+  doc.setTextColor(255,255,255);doc.setFont("helvetica","bold");doc.setFontSize(11);doc.text("Partie A — Tri des caractéristiques",margin+4,y+6.2);y+=12;
+  TRI.forEach(t=>{
+    const ok=state.placements[t.id]===t.type;
+    const yourLab=state.placements[t.id]==="provisoire"?"Provisoire":(state.placements[t.id]==="definitive"?"Définitive":"—");
+    const goodLab=t.type==="provisoire"?"Provisoire":"Définitive";
+    const sLines=doc.splitTextToSize(t.text,pageW-2*margin-10);
+    const eLines=doc.splitTextToSize(t.expl,pageW-2*margin-10);
+    const h=6+sLines.length*4+5+eLines.length*4+6;
+    ensure(h);
+    doc.setFillColor(ok?OKC[0]:KOC[0],ok?OKC[1]:KOC[1],ok?OKC[2]:KOC[2]);doc.rect(margin,y,2,h-3,"F");
+    doc.setFont("helvetica","bold");doc.setFontSize(9.5);doc.setTextColor(ok?OKC[0]:KOC[0],ok?OKC[1]:KOC[1],ok?OKC[2]:KOC[2]);doc.text(ok?"[OK]":"[X]",margin+5,y+5);
+    doc.setTextColor(55,55,55);doc.text(sLines,margin+16,y+5);
+    let yy=y+5+sLines.length*4+2;
+    doc.setFont("helvetica","bold");doc.setFontSize(8.5);doc.setTextColor(100,100,100);doc.text(`Votre classement : ${yourLab}    |    Attendu : ${goodLab}`,margin+5,yy);yy+=5;
+    doc.setFont("helvetica","italic");doc.setFontSize(8.5);doc.setTextColor(90,90,90);doc.text(eLines,margin+5,yy);
+    y+=h;
+  });
+
+  ensure(14);
+  doc.setFillColor(...NAVY);doc.rect(margin,y,pageW-2*margin,9,"F");
+  doc.setTextColor(255,255,255);doc.setFont("helvetica","bold");doc.setFontSize(11);doc.text("Partie B — Mini-calcul de liquidation",margin+4,y+6.2);y+=12;
+  CALC.forEach((c,i)=>{
+    const chosen=state.calc[i], ok=(chosen===c.correct);
+    const yourLab=(chosen!=null)?c.options[chosen]:"—";
+    const qLines=doc.splitTextToSize(`${i+1}. ${c.ask}`,pageW-2*margin-10);
+    const eLines=doc.splitTextToSize(c.expl+"  ("+c.ref+")",pageW-2*margin-10);
+    const yLines=doc.splitTextToSize(`Votre réponse : ${yourLab}`,pageW-2*margin-10);
+    const gLines=doc.splitTextToSize(`Bonne réponse : ${c.options[c.correct]}`,pageW-2*margin-10);
+    const h=6+qLines.length*4+4+yLines.length*4+gLines.length*4+4+eLines.length*4+6;
+    ensure(h);
+    doc.setFillColor(ok?OKC[0]:KOC[0],ok?OKC[1]:KOC[1],ok?OKC[2]:KOC[2]);doc.rect(margin,y,2,h-3,"F");
+    doc.setFont("helvetica","bold");doc.setFontSize(9.5);doc.setTextColor(ok?OKC[0]:KOC[0],ok?OKC[1]:KOC[1],ok?OKC[2]:KOC[2]);doc.text(ok?"[OK]":"[X]",margin+5,y+5);
+    doc.setTextColor(55,55,55);doc.text(qLines,margin+16,y+5);
+    let yy=y+5+qLines.length*4+2;
+    doc.setFont("helvetica","bold");doc.setFontSize(8.5);doc.setTextColor(100,100,100);doc.text(yLines,margin+5,yy);yy+=yLines.length*4;
+    doc.setTextColor(40,100,60);doc.text(gLines,margin+5,yy);yy+=gLines.length*4+1;
+    doc.setFont("helvetica","italic");doc.setFontSize(8.5);doc.setTextColor(90,90,90);doc.text(eLines,margin+5,yy);
+    y+=h;
+  });
+
+  ensure(46);
+  doc.setFillColor(247,244,236);doc.rect(margin,y,pageW-2*margin,8,"F");
+  doc.setTextColor(...BLUE);doc.setFont("helvetica","bold");doc.setFontSize(10);doc.text("À retenir — l'astreinte",margin+3,y+5.5);y+=12;
+  const synth=[
+    "Astreinte = moyen de pression indépendant des dommages-intérêts (L. 131-1 et s. CPCE).",
+    "Provisoire (droit commun, par défaut) : montant modifiable ; liquidée selon le comportement du débiteur et les difficultés rencontrées (L. 131-4).",
+    "Définitive (subsidiaire) : seulement après une astreinte provisoire, pour une durée déterminée ; taux intangible à la liquidation (L. 131-2 al. 3).",
+    "Liquidation : compétence du juge de l'exécution, sauf réserve du juge ayant prononcé l'astreinte."
+  ];
+  doc.setFont("helvetica","normal");doc.setFontSize(9);doc.setTextColor(60,60,60);
+  synth.forEach(t=>{ensure(8);const l=doc.splitTextToSize("•  "+t,pageW-2*margin-6);doc.text(l,margin+3,y);y+=l.length*4+2;});
+
+  footer();
+  const safe=(s)=>s.normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-zA-Z0-9]/g,"_");
+  const df=state.dateQuiz.toISOString().slice(0,10);
+  doc.save(`Attestation_M2_2b_Astreinte_${safe(state.nom)}_${safe(state.prenom)}_${df}.pdf`);
+
+  state.pdfGenerated=true;
+  const b=document.getElementById("btn-pdf");b.disabled=true;b.textContent="✓ PDF déjà téléchargé";
+  document.getElementById("note-after-pdf").style.display="block";
+}
 </script>
 </body>
 </html>
